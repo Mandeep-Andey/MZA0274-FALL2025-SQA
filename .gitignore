@@ -3,7 +3,6 @@ output/
 temp/
 tmp/
 .env
-*.log
 *.tmp
 *.json
 __pycache__/
