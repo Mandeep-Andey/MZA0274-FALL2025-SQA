@@ -7,7 +7,11 @@ Parser needed to implement FAME-ML
 
 import ast 
 import os 
-import constants 
+import constants
+import logging 
+
+# Configure logging for forensics tracking
+logging.basicConfig(filename='forensics.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s') 
 
 
 def checkLoggingPerData(tree_object, name2track):
@@ -80,8 +84,8 @@ def checkAttribFuncsInExcept(expr_obj):
 def getPythonParseObject( pyFile ): 
 	try:
 		full_tree = ast.parse( open( pyFile ).read())    
-	except SyntaxError:
-		# print(constants.PARSING_ERROR_KW, pyFile )
+	except SyntaxError as e:
+		logging.info(f"PARSING_ERROR: SyntaxError in {pyFile} - {str(e)}")
 		full_tree = ast.parse(constants.EMPTY_STRING) 
 	return full_tree 
 
@@ -432,5 +436,6 @@ def checkIfParsablePython( pyFile ):
 	try:
 		full_tree = ast.parse( open( pyFile ).read())    
 	except (SyntaxError, UnicodeDecodeError) as err_ :
+		logging.info(f"PARSING_ERROR: {type(err_).__name__} in {pyFile} - {str(err_)}")
 		flag = False 
 	return flag 	
