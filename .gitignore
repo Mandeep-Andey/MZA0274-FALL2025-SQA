@@ -1,1 +1,13 @@
-.agent
+# Agentic Workflow Files
+logs/
+output/
+temp/
+tmp/
+.env
+*.log
+*.tmp
+*.json # If used for intermediate agent states or scratchpad
+__pycache__/
+venv/
+.venv/
+.agent/
