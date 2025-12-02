@@ -12,7 +12,10 @@ import os
 import pandas as pd
 import py_parser 
 import numpy as np 
+import logging
 
+# Configure logging if not already configured by lint_engine
+logging.basicConfig(filename='forensics.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def giveTimeStamp():
   tsObj = time.time()
@@ -23,7 +26,8 @@ def giveTimeStamp():
 def getCSVData(dic_, dir_repo):
 	temp_list = []
 	for TEST_ML_SCRIPT in dic_:
-		# print(constants.ANALYZING_KW + TEST_ML_SCRIPT) 
+		logging.info(f"Analysis started for file: {TEST_ML_SCRIPT}")
+		# logging.info(constants.ANALYZING_KW + TEST_ML_SCRIPT) 
 		# Section 1.1a
 		data_load_counta = lint_engine.getDataLoadCount( TEST_ML_SCRIPT ) 
 
@@ -133,7 +137,8 @@ def getCSVData(dic_, dir_repo):
   				  model_label_count, model_output_count, data_pipeline_count, environment_count, state_observe_count, total_event_count )
 
 		temp_list.append( the_tup )
-		# print('='*25)
+		logging.info(f"Analysis ended for file: {TEST_ML_SCRIPT}")
+		# logging.info('='*25)
 	return temp_list
   
   
@@ -159,10 +164,10 @@ def runFameML(inp_dir, csv_fil):
 			output_event_dict[subfolder] = events_with_dic
 		temp_list  = getCSVData(events_with_dic, subfolder)
 		df_list    = df_list + temp_list 
-		print(constants.ANALYZING_KW, subfolder)
-		print('-'*50)
+		logging.info(f"{constants.ANALYZING_KW} {subfolder}")
+		logging.info('-'*50)
 	full_df = pd.DataFrame( df_list ) 
-	# print(full_df.head())
+	# logging.info(full_df.head())
 	full_df.to_csv(csv_fil, header= constants.CSV_HEADER, index=False, encoding= constants.UTF_ENCODING)     
 	return output_event_dict
 
@@ -171,8 +176,8 @@ if __name__=='__main__':
 	command_line_flag = False ## after acceptance   
 
 	t1 = time.time()
-	print('Started at:', giveTimeStamp() )
-	print('*'*100 )
+	logging.info(f'Started at: {giveTimeStamp()}')
+	logging.info('*'*100 )
 
 	if command_line_flag:
 		dir_path = input(constants.ASK_INPUT_FROM_USER)   
@@ -199,13 +204,11 @@ if __name__=='__main__':
 		# output_csv = '/Users/arahman/Documents/OneDriveWingUp/OneDrive-TennesseeTechUniversity/Research/VulnStrategyMining/ForensicsinML/Output/V5_OUTPUT_TEST.csv'
 		# full_dict = runFameML(repo_dir, output_csv)
 
-	print('*'*100 )
-	print('Ended at:', giveTimeStamp() )
-	print('*'*100 )
+	logging.info('*'*100 )
+	logging.info(f'Ended at: {giveTimeStamp()}')
+	logging.info('*'*100 )
 	
 	t2 = time.time()
 	time_diff = round( (t2 - t1 ) / 60, 5) 
-	print('Duration: {} minutes'.format(time_diff) )
-	print('*'*100 )
-
-
+	logging.info(f'Duration: {time_diff} minutes')
+	logging.info('*'*100 )
