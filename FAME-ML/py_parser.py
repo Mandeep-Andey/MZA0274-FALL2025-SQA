@@ -436,6 +436,6 @@ def checkIfParsablePython( pyFile ):
 	try:
 		full_tree = ast.parse( open( pyFile ).read())    
 	except (SyntaxError, UnicodeDecodeError) as err_ :
-		logging.info(f"PARSING_ERROR: {type(err_).__name__} in {pyFile} - {str(err_)}")
+		logging.error(f"PARSING_FAILURE: {type(err_).__name__} in {pyFile} - Analysis Aborted for File")
 		flag = False 
 	return flag 	

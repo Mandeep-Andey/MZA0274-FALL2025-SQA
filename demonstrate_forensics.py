@@ -19,7 +19,7 @@ sys.path.append(os.path.join(os.getcwd(), 'FAME-ML'))
 import lint_engine
 
 print("=" * 70)
-print("FORENSICS LOGGING DEMONSTRATION - SQA Activity 4.b")
+print("FORENSICS LOGGING DEMONSTRATION")
 print("=" * 70)
 print("\nAnalyzing 'sample_ml_code.py' for security patterns...\n")
 
