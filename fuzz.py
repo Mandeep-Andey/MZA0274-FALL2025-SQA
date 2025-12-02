@@ -7,6 +7,7 @@ import logging
 # Add FAME-ML to path so we can import lint_engine
 sys.path.append(os.path.join(os.getcwd(), 'FAME-ML'))
 
+# Import lint_engine
 try:
     import lint_engine
 except ImportError:
@@ -51,6 +52,7 @@ def cleanup_files(files):
             os.remove(f)
 
 def main():
+    # List of target methods to fuzz
     target_methods = [
         lint_engine.getDataLoadCount,
         lint_engine.getModelLoadCounta,
@@ -59,12 +61,14 @@ def main():
         lint_engine.getEnvironmentCount
     ]
     
+    # Create bad files
     bad_files = create_bad_files()
     
     all_passed = True
     
     print("Starting Fuzzing...")
     
+    # Test each target method with each bad file
     for method in target_methods:
         print(f"\nTesting method: {method.__name__}")
         for file_path in bad_files:
@@ -73,31 +77,27 @@ def main():
                 method(file_path)
                 print("    PASSED: Handled gracefully (or no error triggered)")
             except Exception as e:
-                # We expect the code might crash if it doesn't handle exceptions.
-                # The requirement says: "If the method crashes (unhandled exception), print 'CRASH FOUND'"
-                # However, since we are calling it inside a try-except block here in the fuzzer, 
-                # we are technically "handling" it here. But the *method itself* didn't handle it.
-                # So this counts as a crash found in the target method.
+                # When the target method throws an unhandled exception, we catch it here.
+                # This allows the fuzzer to continue testing other inputs instead of crashing.
+                # We report this as "CRASH FOUND" because the target method failed to handle the error.
                 print(f"    CRASH FOUND: {type(e).__name__}: {e}")
                 all_passed = False
                 
     cleanup_files(bad_files)
     
+    # If all tests passed, exit with 0. Otherwise, exit with 1.
     if all_passed:
         print("\nFuzzing Completed: All tests passed (gracefully handled).")
         sys.exit(0)
     else:
         print("\nFuzzing Completed: Crashes found.")
-        # The requirement says "exit with status code 0 if all tests pass (or handled errors), and status code 1 if the script itself crashes."
-        # If we found crashes in the target methods, does that mean the script crashed?
-        # Usually a fuzzer finding a crash is a "success" for the fuzzer but a "failure" for the code.
-        # The instructions say: "Ensure fuzz.py exits with status code 0 if all tests pass (or handled errors), and status code 1 if the script itself crashes."
-        # This is slightly ambiguous. If the target method crashes, we caught it. So the script *itself* didn't crash.
-        # So I will exit with 0, but report the crashes.
-        # Wait, if I want to fail the CI if crashes are found, I should probably exit 1?
-        # "If the method crashes (unhandled exception), print 'CRASH FOUND'."
-        # "Ensure fuzz.py exits with status code 0 if all tests pass (or handled errors), and status code 1 if the script itself crashes."
-        # This implies if the fuzzer runs to completion, it's exit code 0.
+        # Exit code explanation:
+        # - Exit 0: The fuzzer script ran successfully (even if it found crashes in the target code)
+        # - Exit 1: The fuzzer script itself crashed or failed to run
+        # 
+        # Since our fuzzer caught all exceptions and completed its job, we exit with 0.
+        # The crashes we found are in the TARGET methods, not in the fuzzer itself.
+        # This is the expected behavior - a successful fuzzer run that discovered bugs.
         sys.exit(0)
 
 if __name__ == "__main__":

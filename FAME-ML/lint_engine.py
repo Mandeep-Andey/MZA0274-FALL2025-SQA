@@ -5,6 +5,11 @@ Oct 20, 2020
 Executes the pattern matching and data flow analysis 
 '''
 
+# SQA Modifications (Fall 2025):
+# - Replaced all print() statements with logging.info() for forensics tracking
+# - Configured logging to write to 'forensics.log' with timestamps
+# - This allows us to track when security-related events are detected during analysis
+
 import py_parser
 import constants 
 import logging
