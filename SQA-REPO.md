@@ -70,6 +70,7 @@ The fuzzer successfully crashed the application, revealing two critical unhandle
 The fuzz.py script catches these exceptions and reports them as "CRASH FOUND," proving the vulnerability exists.
 
 ![alt text](images/fuzz.py.png)
+
 _Figure 1: Terminal output showing the fuzzer running and detecting crashes in the target methods._
 
 ## 3\. Activity 4.b: Forensics & Logging
@@ -109,6 +110,7 @@ logging.basicConfig(
 To verify the forensics, I ran the tool against a dummy script (```sample_ml_code.py```) that I created with observed anti-patterns. The tool successfully generated a ```forensics.log``` file with a complete audit of the events.
 
 ![alt text](images/forensics.png)
+
 _Figure 2_ : The generated forensics.log file showing timestamped _security events._
 
 ## 4\. Activity 4.c: Continuous Integration (CI)
