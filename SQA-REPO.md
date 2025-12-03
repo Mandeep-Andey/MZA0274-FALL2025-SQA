@@ -109,7 +109,7 @@ logging.basicConfig(
 To verify the forensics, I ran the tool against a dummy script (```sample_ml_code.py```) that I created with observed anti-patterns. The tool successfully generated a ```forensics.log``` file with a complete audit of the events.
 
 ![alt text](images/forensics.png)
-_Figure_ 2: The generated forensics.log file showing timestamped _security events._
+_Figure 2_ : The generated forensics.log file showing timestamped _security events._
 
 ## 4\. Activity 4.c: Continuous Integration (CI)
 ---------------------------------------------
